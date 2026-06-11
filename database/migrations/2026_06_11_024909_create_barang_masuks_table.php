@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal');
 
             $table->foreignId('pemasok_id')
-                ->constrained('pemasok');
+                ->constrained('pemasoks');
 
             $table->decimal('total_harga', 15, 2)
                 ->default(0);

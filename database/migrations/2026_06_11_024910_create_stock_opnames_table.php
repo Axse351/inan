@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stock_opnames', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_id')
-                ->constrained('barang');
+                ->constrained('barangs');
 
             $table->integer('stok_sistem');
 

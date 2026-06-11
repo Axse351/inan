@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stok_mutasis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_id')
-                ->constrained('barang');
+                ->constrained('barangs');
 
             $table->enum('jenis', [
                 'MASUK',

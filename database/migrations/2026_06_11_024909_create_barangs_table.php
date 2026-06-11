@@ -18,14 +18,14 @@ return new class extends Migration
             $table->string('barcode')->nullable();
 
             $table->foreignId('kategori_id')
-                ->constrained('kategori');
+                ->constrained('kategoris');
 
             $table->foreignId('satuan_id')
-                ->constrained('satuan');
+                ->constrained('satuans');
 
             $table->foreignId('pemasok_id')
                 ->nullable()
-                ->constrained('pemasok');
+                ->constrained('pemasoks');
 
             $table->string('nama_barang');
 

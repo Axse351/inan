@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('detail_barang_keluars', function (Blueprint $table) {
             $table->id();
             $table->foreignId('barang_keluar_id')
-                ->constrained('barang_keluar')
+                ->constrained('barang_keluars')
                 ->cascadeOnDelete();
 
             $table->foreignId('barang_id')
-                ->constrained('barang');
+                ->constrained('barangs');
 
             $table->integer('qty');
 
