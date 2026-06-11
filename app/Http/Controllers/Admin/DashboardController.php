@@ -8,30 +8,29 @@ use App\Models\BarangMasuk;
 use App\Models\BarangKeluar;
 use App\Models\Kategori;
 use App\Models\Pemasok;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // KPI utama
         $totalBarang   = Barang::count();
         $stokMinimum   = Barang::whereColumn('stok', '<=', 'stok_minimum')->count();
         $masukBulanIni = BarangMasuk::whereMonth('tanggal', now()->month)
-            ->whereYear('tanggal', now()->year)
-            ->count();
+            ->whereYear('tanggal', now()->year)->count();
         $keluarBulanIni = BarangKeluar::whereMonth('tanggal', now()->month)
-            ->whereYear('tanggal', now()->year)
-            ->count();
+            ->whereYear('tanggal', now()->year)->count();
 
-        // Barang stok menipis (stok <= stok_minimum), limit 8
         $barangMenipis = Barang::with('kategori')
             ->whereColumn('stok', '<=', 'stok_minimum')
             ->orderBy('stok')
             ->limit(8)
             ->get();
 
-        // Gabungkan 5 transaksi masuk & keluar terbaru, urutkan by tanggal
-        $masukTerbaru = BarangMasuk::latest('tanggal')->limit(5)->get()
+        $masukTerbaru = BarangMasuk::with('pemasok')
+            ->latest('tanggal')
+            ->limit(5)
+            ->get()
             ->map(fn($m) => [
                 'jenis'      => 'MASUK',
                 'nomor'      => $m->nomor_masuk,
@@ -39,7 +38,9 @@ class DashboardController extends Controller
                 'tanggal'    => $m->tanggal,
             ]);
 
-        $keluarTerbaru = BarangKeluar::latest('tanggal')->limit(5)->get()
+        $keluarTerbaru = BarangKeluar::latest('tanggal')
+            ->limit(5)
+            ->get()
             ->map(fn($k) => [
                 'jenis'      => 'KELUAR',
                 'nomor'      => $k->nomor_keluar,
@@ -47,12 +48,13 @@ class DashboardController extends Controller
                 'tanggal'    => $k->tanggal,
             ]);
 
-        $transaksiTerbaru = $masukTerbaru->merge($keluarTerbaru)
+        $transaksiTerbaru = (new Collection())
+            ->concat($masukTerbaru)
+            ->concat($keluarTerbaru)
             ->sortByDesc('tanggal')
             ->take(8)
             ->values();
 
-        // Ringkasan bawah
         $totalKategori = Kategori::count();
         $totalPemasok  = Pemasok::count();
         $nilaiStok     = Barang::selectRaw('SUM(stok * harga_beli) as total')->value('total') ?? 0;
