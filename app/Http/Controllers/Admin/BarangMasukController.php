@@ -34,7 +34,7 @@ class BarangMasukController extends Controller
     public function create()
     {
         $pemasoks = Pemasok::orderBy('nama_pemasok')->get();
-        $barangs  = Barang::orderBy('nama_barang')->get();
+        $barangs = Barang::orderBy('nama_barang')->get(); // ← tambah with('kategori')
         $nomor    = BarangMasuk::generateNomor();
 
         return view('admin.barang_masuk.create', compact('pemasoks', 'barangs', 'nomor'));

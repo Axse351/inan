@@ -53,17 +53,19 @@
                     <table class="table table-bordered align-middle" id="tabelDetail">
                         <thead class="table-light">
                             <tr>
-                                <th style="width:35%">Barang</th>
-                                <th style="width:15%">Qty</th>
-                                <th style="width:20%">Harga Beli (Rp)</th>
-                                <th class="text-end" style="width:20%">Subtotal</th>
+                                <th style="width:22%">Barang</th>
+                                <th style="width:15%">Kategori</th>
+                                <th style="width:12%">Merk</th>
+                                <th style="width:10%">Qty</th>
+                                <th style="width:16%">Harga Beli (Rp)</th>
+                                <th class="text-end" style="width:15%">Subtotal</th>
                                 <th class="text-center" style="width:10%">Hapus</th>
                             </tr>
                         </thead>
                         <tbody id="detailRows"></tbody>
                         <tfoot>
                             <tr class="table-light">
-                                <td colspan="3" class="text-end fw-semibold">Total</td>
+                                <td colspan="5" class="text-end fw-semibold">Total</td>
                                 <td class="text-end fw-bold" id="grandTotal">Rp 0</td>
                                 <td></td>
                             </tr>
@@ -72,13 +74,15 @@
                 </div>
 
                 <div class="d-flex gap-2 align-items-center flex-wrap mb-4">
-                    <select id="pilihBarang" class="form-select form-select-sm" style="max-width:320px">
+                    <select id="pilihBarang" class="form-select form-select-sm" style="max-width:420px">
                         <option value="">— Pilih barang —</option>
                         @foreach ($barangs as $b)
                             <option value="{{ $b->id }}" data-nama="{{ $b->nama_barang }}"
                                 data-kode="{{ $b->kode_barang }}" data-satuan="{{ $b->satuan?->nama_satuan ?? '' }}"
+                                data-kategori="{{ $b->kategori ?? '-' }}" data-merk="{{ $b->merk ?? '-' }}"
                                 data-harga="{{ $b->harga_beli }}">
-                                {{ $b->nama_barang }} ({{ $b->kode_barang }})
+                                {{ $b->nama_barang }} ({{ $b->kode_barang }}) —
+                                {{ $b->kategori ?? '-' }} / {{ $b->merk ?? '-' }}
                             </option>
                         @endforeach
                     </select>
@@ -149,6 +153,8 @@
                 <div class="text-muted small">${opt.dataset.kode} · ${opt.dataset.satuan}</div>
                 <input type="hidden" name="details[${idx}][barang_id]" value="${id}">
             </td>
+            <td><span class="badge bg-secondary">${opt.dataset.kategori}</span></td>
+            <td>${opt.dataset.merk}</td>
             <td>
                 <input type="number" name="details[${idx}][qty]" class="form-control form-control-sm inp-qty" value="1" min="1" required>
             </td>
@@ -181,4 +187,3 @@
         });
     </script>
 @endpush
-

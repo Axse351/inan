@@ -12,13 +12,7 @@
                     <form class="d-flex gap-2" method="GET">
                         <input type="text" name="search" class="form-control form-control-sm"
                             placeholder="Cari kode / nama / barcode..." value="{{ request('search') }}" style="width:220px">
-                        <select name="kategori_id" class="form-select form-select-sm" style="width:160px">
-                            <option value="">Semua Kategori</option>
-                            @foreach ($kategoris as $kat)
-                                <option value="{{ $kat->id }}" @selected(request('kategori_id') == $kat->id)>{{ $kat->nama_kategori }}
-                                </option>
-                            @endforeach
-                        </select>
+
                         <div class="form-check form-check-inline align-self-center ms-1">
                             <input class="form-check-input" type="checkbox" name="stok_minimum" id="stok_minimum"
                                 value="1" @checked(request('stok_minimum'))>
@@ -46,6 +40,7 @@
                             <th style="width:50px">#</th>
                             <th>Kode</th>
                             <th>Nama Barang</th>
+                            <th>Merk</th>
                             <th>Kategori</th>
                             <th>Satuan</th>
                             <th class="text-end">Harga Beli</th>
@@ -66,7 +61,9 @@
                                             {{ $barang->lokasi_rak }}</small>
                                     @endif
                                 </td>
-                                <td><span class="badge bg-secondary">{{ $barang->kategori?->nama_kategori ?? '-' }}</span>
+                                <td>{{ $barang->merk ?? '-' }}</td>
+                                <td>
+                                    <span class="badge bg-secondary">{{ $barang->kategori ?? '-' }}</span>
                                 </td>
                                 <td>{{ $barang->satuan?->nama_satuan ?? '-' }}</td>
                                 <td class="text-end small">Rp {{ number_format($barang->harga_beli, 0, ',', '.') }}</td>
@@ -113,4 +110,3 @@
         @endif
     </div>
 @endsection
-

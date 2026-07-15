@@ -12,10 +12,11 @@ class Barang extends Model
     protected $fillable = [
         'kode_barang',
         'barcode',
-        'kategori_id',
+        'kategori',
         'satuan_id',
         'pemasok_id',
         'nama_barang',
+        'merk',
         'harga_beli',
         'harga_jual',
         'stok',
@@ -29,10 +30,6 @@ class Barang extends Model
         'harga_jual' => 'decimal:2',
     ];
 
-    public function kategori()
-    {
-        return $this->belongsTo(Kategori::class);
-    }
 
     public function satuan()
     {

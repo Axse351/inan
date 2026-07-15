@@ -24,32 +24,14 @@ Route::prefix('admin')
     ->name('admin.')
     ->group(function () {
 
-        // ============ VIEW ONLY (admin & owner) ============
-        Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+        Route::get('/dashboard', [Admin\DashboardController::class, 'index'])
+            ->middleware(['auth', 'role:admin,owner'])
+            ->name('dashboard');
 
-            Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
-
-            // Master Data — index & show saja
-            Route::resource('kategori', Admin\KategoriController::class)->only(['index', 'show']);
-            Route::resource('satuan',   Admin\SatuanController::class)->only(['index', 'show']);
-            Route::resource('pemasok',  Admin\PemasokController::class)->only(['index', 'show']);
-            Route::resource('barang',   Admin\BarangController::class)->only(['index', 'show']);
-
-            // Transaksi — index & show saja
-            Route::resource('barang-masuk', Admin\BarangMasukController::class)
-                ->names('barang_masuk')
-                ->only(['index', 'show']);
-
-            Route::resource('barang-keluar', Admin\BarangKeluarController::class)
-                ->names('barang_keluar')
-                ->only(['index', 'show']);
-
-            Route::resource('stock-opname', Admin\StockOpnameController::class)
-                ->names('stock_opname')
-                ->only(['index', 'show']);
-        });
-
-        // ============ FULL ACCESS (admin only) ============
+        // ============ FULL ACCESS (admin only) — DIDAFTARKAN LEBIH DULU ============
+        // PENTING: route literal (create) harus terdaftar sebelum route wildcard
+        // ({barang}, {kategori}, dst) dari blok VIEW ONLY di bawah, supaya
+        // Laravel tidak salah mencocokkan "/create" sebagai parameter id.
         Route::middleware(['auth', 'role:admin'])->group(function () {
 
             // Master Data — create/store/edit/update/destroy
@@ -73,6 +55,29 @@ Route::prefix('admin')
 
             // User Management — khusus admin, owner tidak boleh sama sekali
             Route::resource('user', Admin\UserController::class)->except(['show']);
+        });
+
+        // ============ VIEW ONLY (admin & owner) — DIDAFTARKAN BELAKANGAN ============
+        Route::middleware(['auth', 'role:admin,owner'])->group(function () {
+
+            // Master Data — index & show saja
+            Route::resource('kategori', Admin\KategoriController::class)->only(['index', 'show']);
+            Route::resource('satuan',   Admin\SatuanController::class)->only(['index', 'show']);
+            Route::resource('pemasok',  Admin\PemasokController::class)->only(['index', 'show']);
+            Route::resource('barang',   Admin\BarangController::class)->only(['index', 'show']);
+
+            // Transaksi — index & show saja
+            Route::resource('barang-masuk', Admin\BarangMasukController::class)
+                ->names('barang_masuk')
+                ->only(['index', 'show']);
+
+            Route::resource('barang-keluar', Admin\BarangKeluarController::class)
+                ->names('barang_keluar')
+                ->only(['index', 'show']);
+
+            Route::resource('stock-opname', Admin\StockOpnameController::class)
+                ->names('stock_opname')
+                ->only(['index', 'show']);
         });
     });
 

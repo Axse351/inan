@@ -7,12 +7,27 @@
 @section('content')
     <div class="row justify-content-center">
         <div class="col-lg-9">
+
+            @if ($errors->any())
+                <div class="alert alert-danger d-flex align-items-start gap-2" id="alertErrors">
+                    <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+                    <div>
+                        <div class="fw-semibold mb-1">Ada {{ $errors->count() }} isian yang perlu diperbaiki:</div>
+                        <ul class="mb-0 ps-3 small">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+            @endif
+
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom py-3">
                     <h6 class="mb-0 fw-semibold"><i class="bi bi-box-seam me-2"></i>Form Tambah Barang</h6>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('admin.barang.store') }}">
+                    <form method="POST" action="{{ route('admin.barang.store') }}" id="formBarang" novalidate>
                         @csrf
 
                         <div class="row g-3">
@@ -53,17 +68,25 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
-                                <select name="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror">
-                                    <option value="">— Pilih Kategori —</option>
-                                    @foreach ($kategoris as $k)
-                                        <option value="{{ $k->id }}"
-                                            {{ old('kategori_id') == $k->id ? 'selected' : '' }}>
-                                            {{ $k->nama_kategori }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('kategori_id')
+                                <label class="form-label fw-medium">Merk</label>
+                                <input type="text" name="merk"
+                                    class="form-control @error('merk') is-invalid @enderror" value="{{ old('merk') }}"
+                                    placeholder="cth: Yamaha, Denso, Aspira">
+                                @error('merk')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label fw-medium">
+                                    Kategori <span class="text-danger">*</span>
+                                </label>
+
+                                <input type="text" name="kategori"
+                                    class="form-control @error('kategori') is-invalid @enderror"
+                                    value="{{ old('kategori') }}" placeholder="Contoh: Oli, Ban, Aki">
+
+                                @error('kategori')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -84,7 +107,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label class="form-label fw-medium">Pemasok Utama</label>
                                 <select name="pemasok_id" class="form-select @error('pemasok_id') is-invalid @enderror">
                                     <option value="">— Pilih Pemasok —</option>
@@ -143,7 +166,8 @@
                             </div>
 
                             <div class="col-md-3">
-                                <label class="form-label fw-medium">Stok Minimum <span class="text-danger">*</span></label>
+                                <label class="form-label fw-medium">Stok Minimum <span
+                                        class="text-danger">*</span></label>
                                 <input type="number" name="stok_minimum"
                                     class="form-control @error('stok_minimum') is-invalid @enderror"
                                     value="{{ old('stok_minimum', 5) }}" min="0">
@@ -191,3 +215,70 @@
     </div>
 @endsection
 
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ============ TRIGGER SAAT ADA FIELD ERROR (dari validasi server) ============
+            const firstInvalid = document.querySelector('#formBarang .is-invalid');
+            if (firstInvalid) {
+                // Scroll halus ke ringkasan error di atas
+                const alertBox = document.getElementById('alertErrors');
+                if (alertBox) {
+                    alertBox.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                // Fokuskan field pertama yang error, sedikit delay biar scroll selesai dulu
+                setTimeout(() => {
+                    firstInvalid.focus({
+                        preventScroll: true
+                    });
+                }, 400);
+
+                // Highlight ringan biar makin kelihatan
+                firstInvalid.classList.add('shake-error');
+                setTimeout(() => firstInvalid.classList.remove('shake-error'), 600);
+            }
+
+            // ============ TRIGGER SAAT USER MULAI PERBAIKI FIELD ============
+            // Begitu user mengetik/isi ulang field yang error, hilangkan warna merahnya
+            document.querySelectorAll('#formBarang .is-invalid').forEach(function(el) {
+                el.addEventListener('input', function() {
+                    el.classList.remove('is-invalid');
+                });
+                el.addEventListener('change', function() {
+                    el.classList.remove('is-invalid');
+                });
+            });
+        });
+    </script>
+@endpush
+
+@push('styles')
+    <style>
+        @keyframes shakeError {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20%,
+            60% {
+                transform: translateX(-6px);
+            }
+
+            40%,
+            80% {
+                transform: translateX(6px);
+            }
+        }
+
+        .shake-error {
+            animation: shakeError 0.4s ease-in-out;
+            border-color: #dc3545 !important;
+            box-shadow: 0 0 0 .2rem rgba(220, 53, 69, .25) !important;
+        }
+    </style>
+@endpush

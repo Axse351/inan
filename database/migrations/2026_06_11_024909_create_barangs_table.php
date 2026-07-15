@@ -17,8 +17,7 @@ return new class extends Migration
 
             $table->string('barcode')->nullable();
 
-            $table->foreignId('kategori_id')
-                ->constrained('kategoris');
+            $table->string('kategori')->nullable(); // ← tambahkan kolom kategori
 
             $table->foreignId('satuan_id')
                 ->constrained('satuans');
