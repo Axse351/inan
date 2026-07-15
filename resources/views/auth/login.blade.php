@@ -74,7 +74,7 @@
 
                 {{-- Logo --}}
                 <div class="login-logo">
-                    <i class="bi bi-tools text-white fs-3"></i>
+                    <i class="bi bi-boxes text-white fs-3"></i>
                 </div>
                 <h4 class="text-center fw-bold mb-1">Stok Gudang</h4>
                 <p class="text-center text-muted small mb-4">Sistem Manajemen Gudang</p>
@@ -165,4 +165,3 @@
 </body>
 
 </html>
-

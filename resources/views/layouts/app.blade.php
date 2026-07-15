@@ -60,8 +60,13 @@
         <nav class="sidebar d-flex flex-column p-3" style="width:240px; min-width:240px;">
             <a href="{{ $isAdmin ? route('admin.dashboard') : route('owner.dashboard') }}"
                 class="d-flex align-items-center mb-3 text-white text-decoration-none">
-                <i class="bi bi-tools fs-4 me-2 text-warning"></i>
-                <span class="fw-bold">{{ $isAdmin ? 'Admin Panel' : 'Owner Panel' }}</span>
+                <i class="bi bi-boxes fs-3 me-2 text-warning"></i>
+                <div>
+                    <div class="fw-bold">Stok Gudang</div>
+                    <small class="text-secondary">
+                        {{ $isAdmin ? 'Admin Panel' : 'Owner Panel' }}
+                    </small>
+                </div>
             </a>
             <hr class="border-secondary">
 
@@ -77,9 +82,6 @@
             {{-- ============ MASTER DATA (admin & owner, view-only untuk owner) ============ --}}
             <div class="sidebar-heading mt-2">Master Data</div>
             <ul class="nav flex-column">
-                <li><a href="{{ route('admin.kategori.index') }}" class="nav-link @active('admin/kategori*')">
-                        <i class="bi bi-tags me-2"></i> Kategori
-                    </a></li>
                 <li><a href="{{ route('admin.satuan.index') }}" class="nav-link @active('admin/satuan*')">
                         <i class="bi bi-rulers me-2"></i> Satuan
                     </a></li>

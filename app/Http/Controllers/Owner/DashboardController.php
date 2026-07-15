@@ -22,7 +22,7 @@ class DashboardController extends Controller
             ->sum('total_harga');
 
         // Barang dengan stok menipis
-        $barangKritis = Barang::with(['kategori', 'satuan'])
+        $barangKritis = Barang::with(['satuan'])
             ->whereColumn('stok', '<=', 'stok_minimum')
             ->orderBy('stok')
             ->limit(5)

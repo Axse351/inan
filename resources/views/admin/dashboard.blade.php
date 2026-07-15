@@ -78,24 +78,22 @@
                         class="btn btn-sm btn-outline-secondary">Lihat Semua</a>
                 </div>
                 <div class="card-body p-0">
-                    @forelse ($barangMenipis as $b)
+                    @forelse ($barangStokMenipis as $b)
                         <div class="d-flex align-items-center px-3 py-2 border-bottom gap-3">
+                            <div class="flex-shrink-0">
+                                <span class="badge rounded-pill bg-warning text-dark">
+                                    {{ $b->stok }} / {{ $b->stok_minimum }}
+                                </span>
+                            </div>
                             <div class="flex-grow-1 min-w-0">
                                 <div class="fw-medium text-truncate">{{ $b->nama_barang }}</div>
-                                <div class="text-muted small">{{ $b->kode_barang }} ·
-                                    {{ $b->kategori->nama_kategori ?? '-' }}</div>
-                            </div>
-                            <div class="text-end flex-shrink-0">
-                                <span class="badge {{ $b->stok == 0 ? 'bg-danger' : 'bg-warning text-dark' }}">
-                                    Stok: {{ $b->stok }}
-                                </span>
-                                <div class="text-muted small mt-1">Min: {{ $b->stok_minimum }}</div>
+                                <div class="text-muted small">{{ $b->kode_barang }}</div>
                             </div>
                         </div>
                     @empty
                         <div class="text-center text-muted py-4">
-                            <i class="bi bi-check-circle fs-3 d-block mb-1 text-success"></i>
-                            Semua stok dalam kondisi aman
+                            <i class="bi bi-check-circle fs-3 d-block mb-1"></i>
+                            Semua stok aman
                         </div>
                     @endforelse
                 </div>
@@ -144,10 +142,7 @@
         <div class="col-md-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex justify-content-between align-items-center">
-                    <div>
-                        <div class="text-muted small">Total Kategori</div>
-                        <div class="fs-5 fw-bold">{{ $totalKategori }}</div>
-                    </div>
+
                     <i class="bi bi-tags fs-2 text-secondary opacity-50"></i>
                 </div>
                 <div class="card-footer bg-white border-top-0 pt-0">
@@ -188,4 +183,3 @@
     </div>
 
 @endsection
-

@@ -21,10 +21,9 @@ class DashboardController extends Controller
         $keluarBulanIni = BarangKeluar::whereMonth('tanggal', now()->month)
             ->whereYear('tanggal', now()->year)->count();
 
-        $barangMenipis = Barang::with('kategori')
-            ->whereColumn('stok', '<=', 'stok_minimum')
+        $barangStokMenipis = Barang::whereColumn('stok', '<=', 'stok_minimum')
             ->orderBy('stok')
-            ->limit(8)
+            ->limit(5)
             ->get();
 
         $masukTerbaru = BarangMasuk::with('pemasok')
@@ -55,7 +54,6 @@ class DashboardController extends Controller
             ->take(8)
             ->values();
 
-        $totalKategori = Kategori::count();
         $totalPemasok  = Pemasok::count();
         $nilaiStok     = Barang::selectRaw('SUM(stok * harga_beli) as total')->value('total') ?? 0;
 
@@ -64,9 +62,8 @@ class DashboardController extends Controller
             'stokMinimum',
             'masukBulanIni',
             'keluarBulanIni',
-            'barangMenipis',
             'transaksiTerbaru',
-            'totalKategori',
+            'barangStokMenipis',
             'totalPemasok',
             'nilaiStok',
         ));
