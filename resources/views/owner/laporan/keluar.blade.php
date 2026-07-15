@@ -1,4 +1,4 @@
-@extends('owner.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Laporan Barang Keluar')
 @section('page_title', 'Laporan Barang Keluar')
@@ -87,3 +87,4 @@
     </div>
 
 @endsection
+

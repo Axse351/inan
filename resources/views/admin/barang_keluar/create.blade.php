@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Tambah Barang Keluar')
 @section('page_title', 'Tambah Barang Keluar')
@@ -191,3 +191,4 @@
         });
     </script>
 @endpush
+

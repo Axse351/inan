@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'User')
 @section('page_title', 'Manajemen User')
@@ -91,3 +91,4 @@
         @endif
     </div>
 @endsection
+

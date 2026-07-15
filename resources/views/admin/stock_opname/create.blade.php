@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Catat Stock Opname')
 @section('page_title', 'Catat Stock Opname')
@@ -172,3 +172,4 @@
         }
     </script>
 @endpush
+

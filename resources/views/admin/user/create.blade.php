@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Tambah User')
 @section('page_title', 'Tambah User')
@@ -105,3 +105,4 @@
         </div>
     </div>
 @endsection
+

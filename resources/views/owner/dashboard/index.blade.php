@@ -1,4 +1,4 @@
-@extends('owner.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Dashboard')
 @section('page_title', 'Dashboard')
@@ -156,3 +156,4 @@
         });
     </script>
 @endpush
+

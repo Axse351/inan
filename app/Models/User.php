@@ -48,9 +48,8 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class, 'role_id'); // sesuaikan foreign key kalau beda
     }
-
     public function barangMasuks()
     {
         return $this->hasMany(BarangMasuk::class);

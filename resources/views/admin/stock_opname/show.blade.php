@@ -1,4 +1,4 @@
-@extends('admin.layouts.app')
+@extends('layouts.app')
 
 @section('title', 'Detail Stock Opname')
 @section('page_title', 'Detail Stock Opname')
@@ -56,3 +56,4 @@
         </div>
     </div>
 @endsection
+
