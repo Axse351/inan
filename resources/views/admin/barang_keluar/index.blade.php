@@ -60,6 +60,10 @@
                                         class="btn btn-sm btn-outline-info py-0 px-2" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    <a href="{{ route('admin.barang_keluar.invoice', $bk) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-danger py-0 px-2" title="Cetak Invoice">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
                                     <form method="POST" action="{{ route('admin.barang_keluar.destroy', $bk) }}"
                                         class="d-inline"
                                         onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.')">
@@ -90,4 +94,3 @@
         @endif
     </div>
 @endsection
-

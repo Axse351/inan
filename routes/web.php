@@ -27,6 +27,15 @@ Route::prefix('admin')
         Route::get('/dashboard', [Admin\DashboardController::class, 'index'])
             ->middleware(['auth', 'role:admin,owner'])
             ->name('dashboard');
+        // Laporan Stock Opname (ringkasan keuangan & pergudangan)
+        Route::get('laporan-stock-opname', [Admin\LaporanStockOpnameController::class, 'index'])
+            ->name('laporan_stock_opname.index');
+        Route::get('laporan-stock-opname/pdf', [Admin\LaporanStockOpnameController::class, 'pdf'])
+            ->name('laporan_stock_opname.pdf');
+
+        Route::resource('stock-opname', Admin\StockOpnameController::class)
+            ->names('stock_opname')
+            ->only(['index', 'show']);
 
         // ============ FULL ACCESS (admin only) — DIDAFTARKAN LEBIH DULU ============
         // PENTING: route literal (create) harus terdaftar sebelum route wildcard
@@ -74,6 +83,10 @@ Route::prefix('admin')
             Route::resource('barang-keluar', Admin\BarangKeluarController::class)
                 ->names('barang_keluar')
                 ->only(['index', 'show']);
+
+            // Cetak invoice PDF barang keluar (admin & owner boleh lihat/cetak)
+            Route::get('barang-keluar/{barang_keluar}/invoice', [Admin\BarangKeluarController::class, 'invoice'])
+                ->name('barang_keluar.invoice');
 
             Route::resource('stock-opname', Admin\StockOpnameController::class)
                 ->names('stock_opname')

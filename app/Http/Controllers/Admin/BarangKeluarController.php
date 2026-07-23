@@ -8,6 +8,7 @@ use App\Models\Barang;
 use App\Models\StokMutasi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BarangKeluarController extends Controller
 {
@@ -43,6 +44,9 @@ class BarangKeluarController extends Controller
         $request->validate([
             'tanggal'               => 'required|date',
             'tujuan'                => 'nullable|string|max:255',
+            'nama_penerima'         => 'nullable|string|max:255',
+            'no_telepon_penerima'   => 'nullable|string|max:30',
+            'alamat_penerima'       => 'nullable|string',
             'keterangan'            => 'nullable|string',
             'details'               => 'required|array|min:1',
             'details.*.barang_id'   => 'required|exists:barangs,id',
@@ -59,7 +63,9 @@ class BarangKeluarController extends Controller
             }
         }
 
-        DB::transaction(function () use ($request) {
+        $barangKeluarId = null;
+
+        DB::transaction(function () use ($request, &$barangKeluarId) {
             $totalHarga = 0;
             $details    = [];
 
@@ -75,12 +81,15 @@ class BarangKeluarController extends Controller
             }
 
             $barangKeluar = BarangKeluar::create([
-                'nomor_keluar' => BarangKeluar::generateNomor(),
-                'tanggal'      => $request->tanggal,
-                'tujuan'       => $request->tujuan,
-                'total_harga'  => $totalHarga,
-                'keterangan'   => $request->keterangan,
-                'user_id'      => auth()->id(),
+                'nomor_keluar'         => BarangKeluar::generateNomor(),
+                'tanggal'              => $request->tanggal,
+                'tujuan'               => $request->tujuan,
+                'nama_penerima'        => $request->nama_penerima,
+                'no_telepon_penerima'  => $request->no_telepon_penerima,
+                'alamat_penerima'      => $request->alamat_penerima,
+                'total_harga'          => $totalHarga,
+                'keterangan'           => $request->keterangan,
+                'user_id'              => auth()->id(),
             ]);
 
             foreach ($details as $detail) {
@@ -102,9 +111,11 @@ class BarangKeluarController extends Controller
                     'tanggal'      => now(),
                 ]);
             }
+
+            $barangKeluarId = $barangKeluar->id;
         });
 
-        return redirect()->route('admin.barang_keluar.index')
+        return redirect()->route('admin.barang_keluar.show', $barangKeluarId)
             ->with('success', 'Barang keluar berhasil dicatat.');
     }
 
@@ -112,6 +123,18 @@ class BarangKeluarController extends Controller
     {
         $barangKeluar->load(['user', 'details.barang.satuan']);
         return view('admin.barang_keluar.show', compact('barangKeluar'));
+    }
+
+    public function invoice(BarangKeluar $barangKeluar)
+    {
+        $barangKeluar->load(['user', 'details.barang.satuan']);
+
+        $pdf = Pdf::loadView('admin.barang_keluar.invoice', compact('barangKeluar'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->stream('Invoice-' . $barangKeluar->nomor_keluar . '.pdf');
+        // Ganti .stream() jadi .download() kalau mau langsung terunduh:
+        // return $pdf->download('Invoice-' . $barangKeluar->nomor_keluar . '.pdf');
     }
 
     public function destroy(BarangKeluar $barangKeluar)

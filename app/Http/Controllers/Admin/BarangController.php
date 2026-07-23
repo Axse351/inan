@@ -23,20 +23,26 @@ class BarangController extends Controller
             });
         }
 
+        if ($request->filled('kategori')) {
+            $query->where('kategori', $request->kategori);
+        }
 
         if ($request->filled('stok_minimum')) {
             $query->whereColumn('stok', '<=', 'stok_minimum');
         }
 
-        $barangs   = $query->latest()->paginate(10)->withQueryString();
+        $barangs = $query->latest()->paginate(10)->withQueryString();
 
+        $kategoris = Barang::whereNotNull('kategori')
+            ->distinct()
+            ->orderBy('kategori')
+            ->pluck('kategori');
 
-        return view('admin.barang.index', compact('barangs'));
+        return view('admin.barang.index', compact('barangs', 'kategoris'));
     }
 
     public function create()
     {
-
         $satuans   = Satuan::orderBy('nama_satuan')->get();
         $pemasoks  = Pemasok::orderBy('nama_pemasok')->get();
 
@@ -78,7 +84,6 @@ class BarangController extends Controller
 
     public function edit(Barang $barang)
     {
-
         $satuans   = Satuan::orderBy('nama_satuan')->get();
         $pemasoks  = Pemasok::orderBy('nama_pemasok')->get();
 
@@ -90,7 +95,7 @@ class BarangController extends Controller
         $request->validate([
             'kode_barang'   => 'required|string|unique:barangs,kode_barang,' . $barang->id,
             'barcode'       => 'nullable|string|unique:barangs,barcode,' . $barang->id,
-            'kategori' => 'required|string|max:255',
+            'kategori'      => 'required|string|max:255',
             'satuan_id'     => 'required|exists:satuans,id',
             'pemasok_id'    => 'nullable|exists:pemasoks,id',
             'nama_barang'   => 'required|string|max:255',

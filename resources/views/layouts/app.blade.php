@@ -94,6 +94,7 @@
             </ul>
 
             {{-- ============ TRANSAKSI (admin & owner, view-only untuk owner) ============ --}}
+            {{-- ============ TRANSAKSI (admin & owner, view-only untuk owner) ============ --}}
             <div class="sidebar-heading mt-2">Transaksi</div>
             <ul class="nav flex-column">
                 <li><a href="{{ route('admin.barang_masuk.index') }}" class="nav-link @active('admin/barang-masuk*')">
@@ -101,6 +102,9 @@
                     </a></li>
                 <li><a href="{{ route('admin.barang_keluar.index') }}" class="nav-link @active('admin/barang-keluar*')">
                         <i class="bi bi-box-arrow-up me-2"></i> Barang Keluar
+                    </a></li>
+                <li><a href="{{ route('admin.laporan_stock_opname.index') }}" class="nav-link @active('admin/laporan-stock-opname*')">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Laporan Stock Opname
                     </a></li>
                 <li><a href="{{ route('admin.stock_opname.index') }}" class="nav-link @active('admin/stock-opname*')">
                         <i class="bi bi-clipboard-check me-2"></i> Stock Opname
@@ -118,9 +122,13 @@
             @endif
 
             {{-- ============ LAPORAN (khusus owner) ============ --}}
+            {{-- ============ LAPORAN (khusus owner) ============ --}}
             @if ($isOwner)
                 <div class="sidebar-heading mt-2">Laporan</div>
                 <ul class="nav flex-column">
+                    <li><a href="{{ route('admin.laporan_stock_opname.index') }}" class="nav-link @active('admin/laporan-stock-opname*')">
+                            <i class="bi bi-file-earmark-bar-graph me-2"></i> Laporan Stock Opname
+                        </a></li>
                     <li><a href="{{ route('owner.laporan.stok') }}" class="nav-link @active('owner/laporan/stok*')">
                             <i class="bi bi-archive me-2"></i> Laporan Stok
                         </a></li>

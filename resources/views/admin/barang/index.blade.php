@@ -18,8 +18,18 @@
                                 value="1" @checked(request('stok_minimum'))>
                             <label class="form-check-label small" for="stok_minimum">Stok kritis</label>
                         </div>
+
+                        <select name="kategori" class="form-select form-select-sm" style="width:160px">
+                            <option value="">Semua Kategori</option>
+                            @foreach ($kategoris as $kategori)
+                                <option value="{{ $kategori }}" @selected(request('kategori') === $kategori)>
+                                    {{ $kategori }}
+                                </option>
+                            @endforeach
+                        </select>
+
                         <button class="btn btn-sm btn-primary">Cari</button>
-                        @if (request()->hasAny(['search', 'kategori_id', 'stok_minimum']))
+                        @if (request()->hasAny(['search', 'kategori', 'stok_minimum']))
                             <a href="{{ route('admin.barang.index') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
                         @endif
                     </form>

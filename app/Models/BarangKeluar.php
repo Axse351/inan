@@ -13,11 +13,14 @@ class BarangKeluar extends Model
         'nomor_keluar',
         'tanggal',
         'tujuan',
+        'nama_penerima',
+        'no_telepon_penerima',
+        'alamat_penerima',
         'total_harga',
         'keterangan',
         'user_id',
     ];
-
+    
     protected $casts = [
         'tanggal'     => 'date',
         'total_harga' => 'decimal:2',

@@ -13,7 +13,7 @@
             <form method="POST" action="{{ route('admin.barang_keluar.store') }}" id="formKeluar">
                 @csrf
 
-                <div class="row g-3 mb-4">
+                <div class="row g-3 mb-3">
                     <div class="col-md-2">
                         <label class="form-label fw-medium">No. Keluar</label>
                         <input type="text" class="form-control bg-light" value="{{ $nomor }}" disabled>
@@ -27,9 +27,9 @@
                         @enderror
                     </div>
                     <div class="col-md-4">
-                        <label class="form-label fw-medium">Tujuan</label>
+                        <label class="form-label fw-medium">Tujuan / Instansi</label>
                         <input type="text" name="tujuan" class="form-control @error('tujuan') is-invalid @enderror"
-                            value="{{ old('tujuan') }}" placeholder="Tujuan pengiriman / nama penerima">
+                            value="{{ old('tujuan') }}" placeholder="Nama toko / instansi tujuan">
                         @error('tujuan')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -39,6 +39,36 @@
                         <input type="text" name="keterangan"
                             class="form-control @error('keterangan') is-invalid @enderror" value="{{ old('keterangan') }}"
                             placeholder="Catatan tambahan (opsional)">
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label fw-medium">Nama Penerima</label>
+                        <input type="text" name="nama_penerima"
+                            class="form-control @error('nama_penerima') is-invalid @enderror"
+                            value="{{ old('nama_penerima') }}" placeholder="Kepada Yth. ...">
+                        @error('nama_penerima')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-medium">No. Telepon</label>
+                        <input type="text" name="no_telepon_penerima"
+                            class="form-control @error('no_telepon_penerima') is-invalid @enderror"
+                            value="{{ old('no_telepon_penerima') }}" placeholder="08xxxxxxxxxx">
+                        @error('no_telepon_penerima')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-medium">Alamat</label>
+                        <input type="text" name="alamat_penerima"
+                            class="form-control @error('alamat_penerima') is-invalid @enderror"
+                            value="{{ old('alamat_penerima') }}" placeholder="Alamat lengkap penerima">
+                        @error('alamat_penerima')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
@@ -191,4 +221,3 @@
         });
     </script>
 @endpush
-
