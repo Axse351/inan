@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Barang;
+use App\Models\Kategori;
 use App\Models\Satuan;
 use App\Models\Pemasok;
 use Illuminate\Http\Request;
@@ -12,7 +13,7 @@ class BarangController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Barang::with(['satuan', 'pemasok']);
+        $query = Barang::with(['kategori', 'satuan', 'pemasok']);
 
         if ($request->filled('search')) {
             $q = $request->search;
@@ -24,7 +25,7 @@ class BarangController extends Controller
         }
 
         if ($request->filled('kategori')) {
-            $query->where('kategori', $request->kategori);
+            $query->where('kategori_id', $request->kategori);
         }
 
         if ($request->filled('stok_minimum')) {
@@ -33,28 +34,26 @@ class BarangController extends Controller
 
         $barangs = $query->latest()->paginate(10)->withQueryString();
 
-        $kategoris = Barang::whereNotNull('kategori')
-            ->distinct()
-            ->orderBy('kategori')
-            ->pluck('kategori');
+        $kategoris = Kategori::orderBy('nama_kategori')->get();
 
         return view('admin.barang.index', compact('barangs', 'kategoris'));
     }
 
     public function create()
     {
+        $kategoris = Kategori::orderBy('nama_kategori')->get();
         $satuans   = Satuan::orderBy('nama_satuan')->get();
         $pemasoks  = Pemasok::orderBy('nama_pemasok')->get();
 
-        return view('admin.barang.create', compact('satuans', 'pemasoks'));
+        return view('admin.barang.create', compact('kategoris', 'satuans', 'pemasoks'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'kode_barang'   => 'required|string|unique:barangs,kode_barang',
             'barcode'       => 'nullable|string|unique:barangs,barcode',
-            'kategori'      => 'required|string|max:255',
+            'kategori_id'   => 'required|exists:kategoris,id',
             'satuan_id'     => 'required|exists:satuans,id',
             'pemasok_id'    => 'nullable|exists:pemasoks,id',
             'nama_barang'   => 'required|string|max:255',
@@ -67,7 +66,7 @@ class BarangController extends Controller
             'deskripsi'     => 'nullable|string',
         ]);
 
-        Barang::create($request->all());
+        Barang::create($validated);
 
         return redirect()->route('admin.barang.index')
             ->with('success', 'Barang berhasil ditambahkan.');
@@ -75,7 +74,7 @@ class BarangController extends Controller
 
     public function show(Barang $barang)
     {
-        $barang->load(['satuan', 'pemasok', 'stokMutasis' => function ($q) {
+        $barang->load(['kategori', 'satuan', 'pemasok', 'stokMutasis' => function ($q) {
             $q->latest('tanggal')->limit(10);
         }]);
 
@@ -84,18 +83,19 @@ class BarangController extends Controller
 
     public function edit(Barang $barang)
     {
+        $kategoris = Kategori::orderBy('nama_kategori')->get();
         $satuans   = Satuan::orderBy('nama_satuan')->get();
         $pemasoks  = Pemasok::orderBy('nama_pemasok')->get();
 
-        return view('admin.barang.edit', compact('barang', 'satuans', 'pemasoks'));
+        return view('admin.barang.edit', compact('barang', 'kategoris', 'satuans', 'pemasoks'));
     }
 
     public function update(Request $request, Barang $barang)
     {
-        $request->validate([
+        $validated = $request->validate([
             'kode_barang'   => 'required|string|unique:barangs,kode_barang,' . $barang->id,
             'barcode'       => 'nullable|string|unique:barangs,barcode,' . $barang->id,
-            'kategori'      => 'required|string|max:255',
+            'kategori_id'   => 'required|exists:kategoris,id',
             'satuan_id'     => 'required|exists:satuans,id',
             'pemasok_id'    => 'nullable|exists:pemasoks,id',
             'nama_barang'   => 'required|string|max:255',
@@ -107,7 +107,9 @@ class BarangController extends Controller
             'deskripsi'     => 'nullable|string',
         ]);
 
-        $barang->update($request->except('stok')); // stok diubah via transaksi masuk/keluar
+        // stok sengaja tidak ikut divalidasi/diupdate di sini
+        // karena hanya boleh berubah lewat transaksi barang masuk/keluar
+        $barang->update($validated);
 
         return redirect()->route('admin.barang.index')
             ->with('success', 'Barang berhasil diperbarui.');
