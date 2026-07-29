@@ -5,6 +5,10 @@
 @section('breadcrumb', 'Master Data / Barang')
 
 @section('content')
+    @php
+        $isAdmin = auth()->user()->role?->nama_role === 'admin';
+    @endphp
+
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 py-3">
             <div class="row align-items-center">
@@ -34,11 +38,13 @@
                         @endif
                     </form>
                 </div>
-                <div class="col-auto">
-                    <a href="{{ route('admin.barang.create') }}" class="btn btn-sm btn-success">
-                        <i class="bi bi-plus-lg me-1"></i> Tambah Barang
-                    </a>
-                </div>
+                @if ($isAdmin)
+                    <div class="col-auto">
+                        <a href="{{ route('admin.barang.create') }}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-lg me-1"></i> Tambah Barang
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -90,16 +96,18 @@
                                         class="btn btn-xs btn-outline-info btn-sm py-0 px-2">
                                         <i class="bi bi-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.barang.edit', $barang) }}"
-                                        class="btn btn-xs btn-outline-warning btn-sm py-0 px-2">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('admin.barang.destroy', $barang) }}"
-                                        class="d-inline" onsubmit="return confirm('Hapus barang ini?')">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-xs btn-outline-danger btn-sm py-0 px-2"><i
-                                                class="bi bi-trash"></i></button>
-                                    </form>
+                                    @if ($isAdmin)
+                                        <a href="{{ route('admin.barang.edit', $barang) }}"
+                                            class="btn btn-xs btn-outline-warning btn-sm py-0 px-2">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="POST" action="{{ route('admin.barang.destroy', $barang) }}"
+                                            class="d-inline" onsubmit="return confirm('Hapus barang ini?')">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-xs btn-outline-danger btn-sm py-0 px-2"><i
+                                                    class="bi bi-trash"></i></button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

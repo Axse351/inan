@@ -108,7 +108,9 @@ class BarangKeluarController extends Controller
                     'referensi'    => $barangKeluar->nomor_keluar,
                     'user_id'      => auth()->id(),
                     'keterangan'   => 'Barang keluar ke: ' . ($request->tujuan ?? '-'),
-                    'tanggal'      => now(),
+                    // Pakai tanggal transaksi yang diinput user, BUKAN now(),
+                    // supaya laporan per periode konsisten dengan tabel barang_keluars.
+                    'tanggal'      => $request->tanggal,
                 ]);
             }
 
@@ -154,6 +156,7 @@ class BarangKeluarController extends Controller
                     'referensi'    => 'VOID-' . $barangKeluar->nomor_keluar,
                     'user_id'      => auth()->id(),
                     'keterangan'   => 'Pembatalan barang keluar',
+                    // Pembatalan memang terjadi "sekarang", jadi now() di sini tetap benar.
                     'tanggal'      => now(),
                 ]);
             }

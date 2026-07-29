@@ -54,21 +54,22 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-4">
-                                <label class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
-                                <select name="kategori_id" class="form-select @error('kategori_id') is-invalid @enderror">
-                                    <option value="">— Pilih Kategori —</option>
-                                    @foreach ($kategoris as $k)
-                                        <option value="{{ $k->id }}"
-                                            {{ old('kategori_id', $barang->kategori_id) == $k->id ? 'selected' : '' }}>
-                                            {{ $k->nama_kategori }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('kategori_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                           {{-- Ganti bagian dropdown Kategori di admin/barang/edit.blade.php dengan ini --}}
+<div class="col-md-4">
+    <label class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
+    <input type="text" name="kategori" list="daftar_kategori"
+        class="form-control @error('kategori') is-invalid @enderror"
+        value="{{ old('kategori', $barang->kategori) }}"
+        placeholder="cth: Elektronik">
+    <datalist id="daftar_kategori">
+        @foreach ($kategoris as $kat)
+            <option value="{{ $kat }}">
+        @endforeach
+    </datalist>
+    @error('kategori')
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+</div>
 
                             <div class="col-md-4">
                                 <label class="form-label fw-medium">Satuan <span class="text-danger">*</span></label>

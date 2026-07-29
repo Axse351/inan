@@ -13,14 +13,19 @@ class LaporanController extends Controller
 {
     public function stok(Request $request)
     {
-        $barangs = Barang::with(['kategori', 'satuan'])
-            ->when($request->filled('kategori_id'), fn($q) => $q->where('kategori_id', $request->kategori_id))
+        $barangs = Barang::with(['satuan', 'pemasok'])
+            ->when($request->filled('kategori'), fn($q) => $q->where('kategori', $request->kategori))
             ->when($request->filled('stok_kritis'), fn($q) => $q->whereColumn('stok', '<=', 'stok_minimum'))
             ->orderBy('nama_barang')
             ->paginate(20)
             ->withQueryString();
 
-        return view('owner.laporan.stok', compact('barangs'));
+        $kategoris = Barang::whereNotNull('kategori')
+            ->distinct()
+            ->orderBy('kategori')
+            ->pluck('kategori');
+
+        return view('owner.laporan.stok', compact('barangs', 'kategoris'));
     }
 
     public function masuk(Request $request)

@@ -5,6 +5,10 @@
 @section('breadcrumb', 'Master Data / Pemasok')
 
 @section('content')
+    @php
+        $isAdmin = auth()->user()->role?->nama_role === 'admin';
+    @endphp
+
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 py-3">
             <div class="row align-items-center">
@@ -18,11 +22,13 @@
                         @endif
                     </form>
                 </div>
-                <div class="col-auto">
-                    <a href="{{ route('admin.pemasok.create') }}" class="btn btn-sm btn-success">
-                        <i class="bi bi-plus-lg me-1"></i> Tambah
-                    </a>
-                </div>
+                @if ($isAdmin)
+                    <div class="col-auto">
+                        <a href="{{ route('admin.pemasok.create') }}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-lg me-1"></i> Tambah
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -50,17 +56,21 @@
                                 <td>{{ $p->telepon ?? '-' }}</td>
                                 <td>{{ $p->email ?? '-' }}</td>
                                 <td class="text-center">
-                                    <a href="{{ route('admin.pemasok.edit', $p) }}"
-                                        class="btn btn-sm btn-outline-primary py-0 px-2">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    <form method="POST" action="{{ route('admin.pemasok.destroy', $p) }}" class="d-inline"
-                                        onsubmit="return confirm('Hapus pemasok {{ $p->nama_pemasok }}?')">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger py-0 px-2">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
+                                    @if ($isAdmin)
+                                        <a href="{{ route('admin.pemasok.edit', $p) }}"
+                                            class="btn btn-sm btn-outline-primary py-0 px-2">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form method="POST" action="{{ route('admin.pemasok.destroy', $p) }}" class="d-inline"
+                                            onsubmit="return confirm('Hapus pemasok {{ $p->nama_pemasok }}?')">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger py-0 px-2">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-muted small">—</span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -80,4 +90,3 @@
         @endif
     </div>
 @endsection
-

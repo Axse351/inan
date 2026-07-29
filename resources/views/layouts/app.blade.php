@@ -93,23 +93,21 @@
                     </a></li>
             </ul>
 
-            {{-- ============ TRANSAKSI (admin & owner, view-only untuk owner) ============ --}}
-            {{-- ============ TRANSAKSI (admin & owner, view-only untuk owner) ============ --}}
-            <div class="sidebar-heading mt-2">Transaksi</div>
-            <ul class="nav flex-column">
-                <li><a href="{{ route('admin.barang_masuk.index') }}" class="nav-link @active('admin/barang-masuk*')">
-                        <i class="bi bi-box-arrow-in-down me-2"></i> Barang Masuk
-                    </a></li>
-                <li><a href="{{ route('admin.barang_keluar.index') }}" class="nav-link @active('admin/barang-keluar*')">
-                        <i class="bi bi-box-arrow-up me-2"></i> Barang Keluar
-                    </a></li>
-                <li><a href="{{ route('admin.laporan_stock_opname.index') }}" class="nav-link @active('admin/laporan-stock-opname*')">
-                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Laporan Stock Opname
-                    </a></li>
-                <li><a href="{{ route('admin.stock_opname.index') }}" class="nav-link @active('admin/stock-opname*')">
-                        <i class="bi bi-clipboard-check me-2"></i> Stock Opname
-                    </a></li>
-            </ul>
+            {{-- ============ TRANSAKSI (khusus admin) ============ --}}
+            @if ($isAdmin)
+                <div class="sidebar-heading mt-2">Transaksi</div>
+                <ul class="nav flex-column">
+                    <li><a href="{{ route('admin.barang_masuk.index') }}" class="nav-link @active('admin/barang-masuk*')">
+                            <i class="bi bi-box-arrow-in-down me-2"></i> Barang Masuk
+                        </a></li>
+                    <li><a href="{{ route('admin.barang_keluar.index') }}" class="nav-link @active('admin/barang-keluar*')">
+                            <i class="bi bi-box-arrow-up me-2"></i> Barang Keluar
+                        </a></li>
+                    <li><a href="{{ route('admin.stock_opname.index') }}" class="nav-link @active('admin/stock-opname*')">
+                            <i class="bi bi-clipboard-check me-2"></i> Stock Opname
+                        </a></li>
+                </ul>
+            @endif
 
             {{-- ============ USER MANAGEMENT (khusus admin) ============ --}}
             @if ($isAdmin)
@@ -121,14 +119,13 @@
                 </ul>
             @endif
 
-            {{-- ============ LAPORAN (khusus owner) ============ --}}
-            {{-- ============ LAPORAN (khusus owner) ============ --}}
-            @if ($isOwner)
-                <div class="sidebar-heading mt-2">Laporan</div>
-                <ul class="nav flex-column">
-                    <li><a href="{{ route('admin.laporan_stock_opname.index') }}" class="nav-link @active('admin/laporan-stock-opname*')">
-                            <i class="bi bi-file-earmark-bar-graph me-2"></i> Laporan Stock Opname
-                        </a></li>
+            {{-- ============ LAPORAN (admin & owner) ============ --}}
+            <div class="sidebar-heading mt-2">Laporan</div>
+            <ul class="nav flex-column">
+                <li><a href="{{ route('admin.laporan_stock_opname.index') }}" class="nav-link @active('admin/laporan-stock-opname*')">
+                        <i class="bi bi-file-earmark-bar-graph me-2"></i> Laporan Stock Opname
+                    </a></li>
+                @if ($isOwner)
                     <li><a href="{{ route('owner.laporan.stok') }}" class="nav-link @active('owner/laporan/stok*')">
                             <i class="bi bi-archive me-2"></i> Laporan Stok
                         </a></li>
@@ -141,8 +138,8 @@
                     <li><a href="{{ route('owner.laporan.mutasi') }}" class="nav-link @active('owner/laporan/mutasi*')">
                             <i class="bi bi-arrow-left-right me-2"></i> Mutasi Stok
                         </a></li>
-                </ul>
-            @endif
+                @endif
+            </ul>
 
             <div class="mt-auto">
                 <form method="POST" action="{{ route('logout') }}">

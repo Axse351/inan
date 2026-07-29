@@ -5,6 +5,10 @@
 @section('breadcrumb', 'Transaksi / Barang Keluar')
 
 @section('content')
+    @php
+        $isAdmin = auth()->user()->role?->nama_role === 'admin';
+    @endphp
+
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 py-3">
             <div class="row align-items-center">
@@ -24,11 +28,13 @@
                         @endif
                     </form>
                 </div>
-                <div class="col-auto">
-                    <a href="{{ route('admin.barang_keluar.create') }}" class="btn btn-sm btn-success">
-                        <i class="bi bi-plus-lg me-1"></i> Tambah
-                    </a>
-                </div>
+                @if ($isAdmin)
+                    <div class="col-auto">
+                        <a href="{{ route('admin.barang_keluar.create') }}" class="btn btn-sm btn-success">
+                            <i class="bi bi-plus-lg me-1"></i> Tambah
+                        </a>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -64,14 +70,16 @@
                                         class="btn btn-sm btn-outline-danger py-0 px-2" title="Cetak Invoice">
                                         <i class="bi bi-file-earmark-pdf"></i>
                                     </a>
-                                    <form method="POST" action="{{ route('admin.barang_keluar.destroy', $bk) }}"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.')">
-                                        @csrf @method('DELETE')
-                                        <button class="btn btn-sm btn-outline-danger py-0 px-2" title="Batalkan">
-                                            <i class="bi bi-x-circle"></i>
-                                        </button>
-                                    </form>
+                                    @if ($isAdmin)
+                                        <form method="POST" action="{{ route('admin.barang_keluar.destroy', $bk) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.')">
+                                            @csrf @method('DELETE')
+                                            <button class="btn btn-sm btn-outline-danger py-0 px-2" title="Batalkan">
+                                                <i class="bi bi-x-circle"></i>
+                                            </button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty

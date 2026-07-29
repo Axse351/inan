@@ -34,7 +34,7 @@ class BarangMasukController extends Controller
     public function create()
     {
         $pemasoks = Pemasok::orderBy('nama_pemasok')->get();
-        $barangs = Barang::orderBy('nama_barang')->get(); // ← tambah with('kategori')
+        $barangs  = Barang::orderBy('nama_barang')->get();
         $nomor    = BarangMasuk::generateNomor();
 
         return view('admin.barang_masuk.create', compact('pemasoks', 'barangs', 'nomor'));
@@ -92,7 +92,9 @@ class BarangMasukController extends Controller
                     'referensi'    => $barangMasuk->nomor_masuk,
                     'user_id'      => auth()->id(),
                     'keterangan'   => 'Barang masuk dari pemasok',
-                    'tanggal'      => now(),
+                    // Pakai tanggal transaksi yang diinput user, BUKAN now(),
+                    // supaya laporan per periode konsisten dengan tabel barang_masuks.
+                    'tanggal'      => $request->tanggal,
                 ]);
             }
         });
@@ -125,6 +127,7 @@ class BarangMasukController extends Controller
                     'referensi'    => 'VOID-' . $barangMasuk->nomor_masuk,
                     'user_id'      => auth()->id(),
                     'keterangan'   => 'Pembatalan barang masuk',
+                    // Pembatalan memang terjadi "sekarang", jadi now() di sini tetap benar.
                     'tanggal'      => now(),
                 ]);
             }
