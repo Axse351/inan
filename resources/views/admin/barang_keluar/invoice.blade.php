@@ -12,43 +12,52 @@
         }
 
         .header {
-            display: table;
-            width: 100%;
+            text-align: center;
             margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
         }
 
-        .header .company {
-            display: table-cell;
-            width: 60%;
-            vertical-align: top;
+        .header img.logo {
+            height: 60px;
+            margin-bottom: 8px;
         }
 
-        .header .invoice-title {
-            display: table-cell;
-            width: 40%;
-            text-align: right;
-            vertical-align: top;
-        }
-
-        .company h2 {
-            margin: 0 0 4px 0;
-            font-size: 18px;
-        }
-
-        .company p {
+        .header h2 {
             margin: 0;
+            font-size: 20px;
+        }
+
+        .header p {
+            margin: 2px 0;
             color: #555;
             font-size: 11px;
         }
 
-        .invoice-title h1 {
+        .invoice-meta {
+            display: table;
+            width: 100%;
+            margin: 15px 0;
+        }
+
+        .invoice-meta .box {
+            display: table-cell;
+            width: 50%;
+            vertical-align: top;
+        }
+
+        .invoice-meta .box.right {
+            text-align: right;
+        }
+
+        .invoice-meta h1 {
             margin: 0;
-            font-size: 24px;
+            font-size: 20px;
             letter-spacing: 2px;
             color: #444;
         }
 
-        .invoice-title p {
+        .invoice-meta p {
             margin: 2px 0;
             font-size: 11px;
         }
@@ -144,13 +153,19 @@
 <body>
 
     <div class="header">
-        <div class="company">
-            <h2>Sinar Bangkit</h2>
-            <p>Alamat perusahaan, Kota, Kode Pos</p>
-            <p>Telp: (0231) 000-0000 &middot; Email: info@perusahaan.com</p>
-        </div>
-        <div class="invoice-title">
+        @if (file_exists(public_path('images/logo-toko.png')))
+            <img src="{{ public_path('images/logo-toko.png') }}" class="logo" alt="Logo">
+        @endif
+        <h2>Sinar Bangkit</h2>
+        <p>Jl. Kanggraksan No.64, Harjamukti, Kec. Harjamukti, Kota Cirebon, Jawa Barat 45143</p>
+        <p>Telp: (0231) 000-0000 &middot; Email: info@perusahaan.com</p>
+    </div>
+
+    <div class="invoice-meta">
+        <div class="box">
             <h1>INVOICE</h1>
+        </div>
+        <div class="box right">
             <p><strong>No:</strong> {{ $barangKeluar->nomor_keluar }}</p>
             <p><strong>Tanggal:</strong> {{ $barangKeluar->tanggal->format('d/m/Y') }}</p>
         </div>

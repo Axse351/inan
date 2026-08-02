@@ -15,7 +15,7 @@
                 <div class="col">
                     <form class="d-flex gap-2 flex-wrap" method="GET">
                         <input type="text" name="search" class="form-control form-control-sm"
-                            placeholder="No. keluar / tujuan..." value="{{ request('search') }}" style="width:180px">
+                            placeholder="No. keluar / nama konsumen..." value="{{ request('search') }}" style="width:180px">
                         <input type="date" name="tanggal_dari" class="form-control form-control-sm"
                             value="{{ request('tanggal_dari') }}" style="width:145px">
                         <span class="align-self-center text-muted small">s/d</span>
@@ -46,7 +46,7 @@
                             <th style="width:50px">#</th>
                             <th>No. Keluar</th>
                             <th>Tanggal</th>
-                            <th>Tujuan</th>
+                            <th>Nama Konsumen</th>
                             <th class="text-end">Total</th>
                             <th>Dicatat oleh</th>
                             <th class="text-center">Aksi</th>

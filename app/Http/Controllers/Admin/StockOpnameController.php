@@ -23,7 +23,35 @@ class StockOpnameController extends Controller
         }
 
         $stockOpnames = $query->latest()->paginate(10)->withQueryString();
-        return view('admin.stock_opname.index', compact('stockOpnames'));
+
+        // === Laporan mutasi stok per bulan (masuk/keluar/sisa) ===
+        // ASUMSI: tabel stok_mutasis, kolom jenis berisi 'MASUK' / 'KELUAR'.
+        // Sesuaikan nama tabel/kolom kalau berbeda di project kamu.
+        $bulan = $request->filled('bulan') ? $request->bulan : now()->format('Y-m');
+        [$tahun, $bln] = explode('-', $bulan);
+
+        $laporanStok = Barang::query()
+            ->select('barangs.id', 'barangs.nama_barang', 'barangs.stok as stok_sekarang')
+            ->selectSub(function ($q) use ($tahun, $bln) {
+                $q->from('stok_mutasis')
+                    ->selectRaw('COALESCE(SUM(qty), 0)')
+                    ->whereColumn('barang_id', 'barangs.id')
+                    ->where('jenis', 'MASUK')
+                    ->whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bln);
+            }, 'total_masuk')
+            ->selectSub(function ($q) use ($tahun, $bln) {
+                $q->from('stok_mutasis')
+                    ->selectRaw('COALESCE(SUM(qty), 0)')
+                    ->whereColumn('barang_id', 'barangs.id')
+                    ->where('jenis', 'KELUAR')
+                    ->whereYear('tanggal', $tahun)
+                    ->whereMonth('tanggal', $bln);
+            }, 'total_keluar')
+            ->orderBy('nama_barang')
+            ->get();
+
+        return view('admin.stock_opname.index', compact('stockOpnames', 'laporanStok', 'bulan'));
     }
 
     public function create()
@@ -59,7 +87,6 @@ class StockOpnameController extends Controller
                     'tanggal'     => $request->tanggal,
                 ]);
 
-                // Update stok barang sesuai stok fisik
                 if ($selisih !== 0) {
                     $barang->update(['stok' => $stokFisik]);
 
@@ -86,5 +113,23 @@ class StockOpnameController extends Controller
     {
         $stockOpname->load(['barang.satuan', 'user']);
         return view('admin.stock_opname.show', compact('stockOpname'));
+    }
+
+    public function destroy(StockOpname $stockOpname)
+    {
+        DB::transaction(function () use ($stockOpname) {
+            // kembalikan stok barang ke stok_sistem sebelum opname ini dibuat
+            $barang = $stockOpname->barang;
+            $barang->update(['stok' => $stockOpname->stok_sistem]);
+
+            StokMutasi::where('referensi', 'OPNAME-' . $stockOpname->tanggal)
+                ->where('barang_id', $stockOpname->barang_id)
+                ->delete();
+
+            $stockOpname->delete();
+        });
+
+        return redirect()->route('admin.stock_opname.index')
+            ->with('success', 'Data stock opname berhasil dihapus.');
     }
 }

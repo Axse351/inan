@@ -5,7 +5,7 @@
 @section('breadcrumb', 'Transaksi / Stock Opname')
 
 @section('content')
-    <div class="card border-0 shadow-sm">
+    <div class="card border-0 shadow-sm mb-4">
         <div class="card-header bg-white border-0 py-3">
             <div class="row align-items-center">
                 <div class="col">
@@ -65,9 +65,17 @@
                                 <td>{{ $so->user?->name ?? '-' }}</td>
                                 <td class="text-center">
                                     <a href="{{ route('admin.stock_opname.show', $so) }}"
-                                        class="btn btn-sm btn-outline-info py-0 px-2">
+                                        class="btn btn-sm btn-outline-info py-0 px-2" title="Detail">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    <form method="POST" action="{{ route('admin.stock_opname.destroy', $so) }}"
+                                        class="d-inline"
+                                        onsubmit="return confirm('Hapus data opname ini? Stok akan dikembalikan ke stok sistem sebelumnya.')">
+                                        @csrf @method('DELETE')
+                                        <button class="btn btn-sm btn-outline-danger py-0 px-2" title="Hapus">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
                                 </td>
                             </tr>
                         @empty
@@ -86,5 +94,60 @@
             <div class="card-footer bg-white border-0">{{ $stockOpnames->links() }}</div>
         @endif
     </div>
-@endsection
 
+    {{-- === Laporan Mutasi Stok per Bulan === --}}
+    <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white border-0 py-3">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h6 class="mb-0">Laporan Barang Masuk / Keluar per Bulan</h6>
+                </div>
+                <div class="col-auto">
+                    <form class="d-flex gap-2" method="GET">
+                        <input type="month" name="bulan" class="form-control form-control-sm"
+                            value="{{ $bulan }}" style="width:160px">
+                        <button class="btn btn-sm btn-primary">Tampilkan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Barang</th>
+                            <th class="text-end">Masuk (Supplier)</th>
+                            <th class="text-end">Keluar (Konsumen)</th>
+                            <th class="text-end">Stok Sekarang</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($laporanStok as $item)
+                            <tr>
+                                <td>{{ $item->nama_barang }}</td>
+                                <td class="text-end">{{ $item->total_masuk }}</td>
+                                <td class="text-end">{{ $item->total_keluar }}</td>
+                                <td class="text-end">{{ $item->stok_sekarang }}</td>
+                                <td>
+                                    @if ($item->total_masuk > 0 && $item->total_keluar == 0)
+                                        <span class="badge bg-warning text-dark">Tidak laku bulan ini</span>
+                                    @elseif ($item->total_masuk == 0 && $item->total_keluar == 0)
+                                        <span class="badge bg-secondary">Tidak ada mutasi</span>
+                                    @else
+                                        <span class="badge bg-success">Bergerak</span>
+                                    @endif
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Belum ada data mutasi bulan ini.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+@endsection
