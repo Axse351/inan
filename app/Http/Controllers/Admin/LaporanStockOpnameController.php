@@ -114,7 +114,13 @@ class LaporanStockOpnameController extends Controller
 
         // ── Kondisi Gudang Saat Ini (snapshot, bukan per periode) ─
         $totalNilaiStok = Barang::selectRaw('COALESCE(SUM(stok * harga_beli), 0) as total')->value('total');
-        $jumlahBarangKritis = Barang::whereColumn('stok', '<=', 'stok_minimum')->count();
+
+        $barangKritis = Barang::whereColumn('stok', '<=', 'stok_minimum')
+            ->select('id', 'nama_barang', 'stok', 'stok_minimum')
+            ->orderBy('stok')
+            ->get();
+
+        $jumlahBarangKritis = $barangKritis->count();
         $jumlahJenisBarang  = Barang::count();
 
         return [
@@ -148,6 +154,7 @@ class LaporanStockOpnameController extends Controller
 
             'totalNilaiStok'     => $totalNilaiStok,
             'jumlahBarangKritis' => $jumlahBarangKritis,
+            'barangKritis'       => $barangKritis,
             'jumlahJenisBarang'  => $jumlahJenisBarang,
         ];
     }

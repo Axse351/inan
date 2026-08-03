@@ -76,6 +76,10 @@
             text-align: right;
         }
 
+        table.items .text-danger {
+            color: #c0392b;
+        }
+
         h3 {
             font-size: 13px;
             margin: 18px 0 6px 0;
@@ -169,6 +173,32 @@
             @empty
                 <tr>
                     <td colspan="4">Tidak ada data.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <h3>Barang Stok Kritis</h3>
+    <table class="items">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nama Barang</th>
+                <th class="text-end">Stok Saat Ini</th>
+                <th class="text-end">Stok Minimum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($barangKritis as $i => $b)
+                <tr>
+                    <td>{{ $i + 1 }}</td>
+                    <td>{{ $b->nama_barang }}</td>
+                    <td class="text-end text-danger">{{ $b->stok }}</td>
+                    <td class="text-end">{{ $b->stok_minimum }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="4">Tidak ada barang kritis.</td>
                 </tr>
             @endforelse
         </tbody>

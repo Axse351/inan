@@ -152,9 +152,36 @@
         <div class="col-md-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-body">
-                    <div class="text-muted small mb-1"><i class="bi bi-exclamation-triangle me-1"></i>Barang Stok Kritis
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <div class="text-muted small mb-1"><i class="bi bi-exclamation-triangle me-1"></i>Barang
+                                Stok Kritis</div>
+                            <div class="fs-5 fw-bold text-danger">{{ $jumlahBarangKritis }} item</div>
+                        </div>
+                        @if ($barangKritis->count())
+                            <button class="btn btn-sm btn-outline-danger" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#daftarStokKritis" aria-expanded="false"
+                                aria-controls="daftarStokKritis">
+                                Lihat
+                            </button>
+                        @endif
                     </div>
-                    <div class="fs-5 fw-bold text-danger">{{ $jumlahBarangKritis }} item</div>
+
+                    @if ($barangKritis->count())
+                        <div class="collapse mt-2" id="daftarStokKritis">
+                            <ul class="list-unstyled small mb-0" style="max-height:160px; overflow-y:auto;">
+                                @foreach ($barangKritis as $b)
+                                    <li class="d-flex justify-content-between border-top py-1">
+                                        <span>{{ $b->nama_barang }}</span>
+                                        <span class="text-danger fw-semibold">{{ $b->stok }} / min
+                                            {{ $b->stok_minimum }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @else
+                        <p class="text-muted small mb-0 mt-2">Tidak ada barang kritis.</p>
+                    @endif
                 </div>
             </div>
         </div>
