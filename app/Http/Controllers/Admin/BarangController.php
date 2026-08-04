@@ -110,14 +110,30 @@ class BarangController extends Controller
             'merk'          => 'nullable|string|max:255',
             'harga_beli'    => 'required|numeric|min:0',
             'harga_jual'    => 'required|numeric|min:0',
+            'stok'          => 'required|integer|min:0',
             'stok_minimum'  => 'required|integer|min:0',
             'lokasi_rak'    => 'nullable|string|max:255',
             'deskripsi'     => 'nullable|string',
         ]);
 
-        // stok sengaja tidak ikut divalidasi/diupdate di sini
-        // karena hanya boleh berubah lewat transaksi barang masuk/keluar
+        $stokLama = $barang->stok;
+        $stokBaru = (int) $validated['stok'];
+
         $barang->update($validated);
+
+        // Perubahan stok manual dicatat sebagai mutasi penyesuaian,
+        // supaya tetap ada jejak audit selain lewat transaksi masuk/keluar.
+        if ($stokLama !== $stokBaru) {
+            $barang->stokMutasis()->create([
+                'tanggal'      => now(),
+                'jenis'        => 'penyesuaian',
+                'jumlah'       => $stokBaru - $stokLama,
+                'stok_sebelum' => $stokLama,
+                'stok_sesudah' => $stokBaru,
+                'keterangan'   => 'Penyesuaian manual via form edit barang',
+                'user_id'      => auth()->id(),
+            ]);
+        }
 
         return redirect()->route('admin.barang.index')
             ->with('success', 'Barang berhasil diperbarui.');

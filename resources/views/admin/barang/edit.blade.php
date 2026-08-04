@@ -54,22 +54,20 @@
                                 @enderror
                             </div>
 
-                           {{-- Ganti bagian dropdown Kategori di admin/barang/edit.blade.php dengan ini --}}
-<div class="col-md-4">
-    <label class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
-    <input type="text" name="kategori" list="daftar_kategori"
-        class="form-control @error('kategori') is-invalid @enderror"
-        value="{{ old('kategori', $barang->kategori) }}"
-        placeholder="cth: Elektronik">
-    <datalist id="daftar_kategori">
-        @foreach ($kategoris as $kat)
-            <option value="{{ $kat }}">
-        @endforeach
-    </datalist>
-    @error('kategori')
-        <div class="invalid-feedback">{{ $message }}</div>
-    @enderror
-</div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-medium">Kategori <span class="text-danger">*</span></label>
+                                <input type="text" name="kategori" list="daftar_kategori"
+                                    class="form-control @error('kategori') is-invalid @enderror"
+                                    value="{{ old('kategori', $barang->kategori) }}" placeholder="cth: Elektronik">
+                                <datalist id="daftar_kategori">
+                                    @foreach ($kategoris as $kat)
+                                        <option value="{{ $kat }}">
+                                    @endforeach
+                                </datalist>
+                                @error('kategori')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
 
                             <div class="col-md-4">
                                 <label class="form-label fw-medium">Satuan <span class="text-danger">*</span></label>
@@ -137,8 +135,16 @@
 
                             <div class="col-md-3">
                                 <label class="form-label fw-medium">Stok Saat Ini</label>
-                                <input type="text" class="form-control bg-light" value="{{ $barang->stok }}" disabled>
-                                <div class="form-text">Stok diubah via transaksi masuk/keluar.</div>
+                                <input type="number" name="stok"
+                                    class="form-control @error('stok') is-invalid @enderror"
+                                    value="{{ old('stok', $barang->stok) }}" min="0">
+                                @error('stok')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text text-warning">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                    Perubahan manual dicatat sebagai penyesuaian stok.
+                                </div>
                             </div>
 
                             <div class="col-md-3">
@@ -189,4 +195,3 @@
         </div>
     </div>
 @endsection
-
